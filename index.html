@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bookmark Novels Internal Portal</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" />
+        <style>
+        html, body {
+            font-size: 14px;
+            margin: 0.5rem;
+        }
+
+        h3, .card-deck {
+            margin-bottom: 1rem;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="alert alert-warning" role="alert">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                This web portal for internal use only!
+            </div>
+            <h3>Development / Beta Access</h3>
+            <div class="card-deck" id="dev-links"></div>
+            <div>
+            <h3>
+                Production Access
+                <span class="badge badge-danger">Authorization Required</span>
+            </h3>
+            </div>
+            <div class="card-deck" id="prod-links"></div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script>
+        var dev_links = [
+            ['Consul', 'Check service health and manage global configuration values.', 'consul.dev'],
+            ['Goldfish', 'Manage global service secrets. This requires an authorization token provided by your team leader.', 'goldfish.dev'],
+            ['SQLBuddy', 'Administrate the shared developer database for all Bookmark services.', 'sql.dev']
+        ];
+
+        var prod_links = [
+            ['Consul', 'Check service health and manage global configuration values.', 'consul'],
+            ['Goldfish', 'Manage global service secrets. This requires an authorization token provided by your team leader.', 'goldfish'],
+            ['SQLBuddy', 'Administrate the shared production database for all Bookmark services.', 'sql']
+        ];
+
+        var devops_links = [
+            ['DigitalOcean', 'Check service health and manage global configuration values.', 'consul']
+        ];
+
+        dev_links.forEach(function(item) {
+            $('#dev-links').append(makeCard(item[0], item[1], item[2]));
+        });
+
+        prod_links.forEach(function(item) {
+            $('#prod-links').append(makeCard(item[0], item[1], item[2]));
+        });
+
+        function makeCard(title, desc, link) {
+            return $('<div>').addClass('card').css('max-width', '25rem').append(
+                $('<div>').addClass('card-body').append(
+                    $('<h4>').addClass('card-title').html(title)
+                ).append(
+                    $('<p>').addClass('card-text').html(desc)
+                )
+            ).append(
+                $('<div>').addClass('card-footer').append(
+                    $('<a>').addClass('card-link btn btn-primary')
+                            .html('Access')
+                            .attr('href', 'https://' + link + '.bookmark.services')
+                )
+            );
+        }
+        </script>
+    </body>
+</html>
