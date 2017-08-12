@@ -46,7 +46,8 @@
         var dev_links = [
             ['Consul', 'Check service health and manage global configuration values.', 'consul.dev'],
             ['Goldfish', 'Manage global service secrets. This requires an authorization token provided by your team leader.', 'goldfish.dev'],
-            ['SQLBuddy', 'Administrate the shared developer database for all Bookmark services.', 'sql.dev']
+            ['SQLBuddy', 'Administrate the shared developer database for all Bookmark services.', 'sql.dev'],
+            ['Travis', 'Continuous integration and deployment pipeline for Bookmark services.', 'https://travis-ci.org/Bookmark-Novels']
         ];
 
         var prod_links = [
@@ -74,6 +75,8 @@
         }
 
         function makeCard(title, desc, link) {
+            link = link.startsWith('https://') || link.startsWith('http://') ? link : 'https://' + link + '.bookmark.services';
+
             return $('<div>').addClass('card mb-3').append(
                 $('<div>').addClass('card-body').append(
                     $('<h4>').addClass('card-title').html(title)
@@ -84,7 +87,7 @@
                 $('<div>').addClass('card-footer').append(
                     $('<a>').addClass('card-link btn btn-primary')
                             .html('Access')
-                            .attr('href', 'https://' + link + '.bookmark.services')
+                            .attr('href', link)
                 )
             );
         }
