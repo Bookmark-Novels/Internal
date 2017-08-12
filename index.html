@@ -15,13 +15,14 @@
         <div class="container">
             <div class="alert alert-warning" role="alert">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                This web portal is intended for internal use only. You must be logged in to a Bookmark authorized Github account to access all resources.
+                This web portal is intended for internal use only. You must be logged in to a Bookmark authorized GitHub account to access resources.
             </div>
             <div class="row">
                 <div class="nav flex-column nav-pills col-3" id="v-pills-tab" role="tablist" style="padding-left: 15px;">
                     <a class="nav-link active" id="v-pills-all-tab" data-toggle="pill" href="#v-pills-all" role="tab" aria-controls="v-pills-all" aria-expanded="true">Universal Resources</a>
                     <a class="nav-link" id="v-pills-dev-tab" data-toggle="pill" href="#v-pills-dev" role="tab" aria-controls="v-pills-dev" aria-expanded="true">Development</a>
                     <a class="nav-link" id="v-pills-prod-tab" data-toggle="pill" href="#v-pills-prod" role="tab" aria-controls="v-pills-prod" aria-expanded="true">Production</a>
+                    <a class="nav-link" id="v-pills-provision-tab" data-toggle="pill" href="#v-pills-provision" role="tab" aria-controls="v-pills-provision" aria-expanded="true">Provision Resources</a>
                 </div>
                 <div class="tab-content col-9" id="v-pills-tabContent">
                     <div class="tab-pane fade show active" id="v-pills-all" role="tabpanel" aria-labelledby="v-pills-all-tab"></div>
@@ -32,12 +33,24 @@
                             Access to all production resources requires additional authorization.
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="v-pills-provision" role="tabpanel" aria-labelledby="v-pills-provision-tab">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Create Vault Token</h4>
+                                <p class="card-text">Create a personal Vault token for development purposes. This token is needed to access the shared MySQL server from services such as Gatekeeper and Provider</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-token">Access</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
         <script>
         var all_links = [
             ['Wiki', 'Wiki style knowledge base for everything Bookmark.', 'wiki.dev']
@@ -91,6 +104,15 @@
                 )
             );
         }
+
+        $('#provision-token').click(function(){
+            var dialog = bootbox.alert('Attempting to create new Vault token...');
+            $.getJSON('https://provision.dev.bookmark.services/token', function(resp) {
+                dialog.find('.bootbox-body').html($('<samp>').text(resp.token).outerHTML());
+            }).fail(function() {
+                dialog.find('.bootbox-body').html('Failed to create token. Try again later.');
+            });
+        });
         </script>
     </body>
 </html>
