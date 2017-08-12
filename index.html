@@ -107,7 +107,7 @@
 
         $('#provision-token').click(function(){
             var dialog = bootbox.alert('Attempting to create new Vault token...');
-            $.getJSON('https://provision.dev.bookmark.services/token', function(resp) {
+            $.getJSON('https://provision.dev.bookmark.services/token', {withCredentials: true}, function(resp) {
                 dialog.find('.bootbox-body').html($('<samp>').text(resp.token).outerHTML());
             }).fail(function() {
                 dialog.find('.bootbox-body').html('Failed to create token. Try again later.');
