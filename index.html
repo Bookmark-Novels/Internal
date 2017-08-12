@@ -106,13 +106,43 @@
         }
 
         $('#provision-token').click(function(){
-            var dialog = bootbox.alert('Attempting to create new Vault token...');
-            $.getJSON('https://provision.dev.bookmark.services/token', {withCredentials: true}, function(resp) {
-                dialog.find('.bootbox-body').html($('<samp>').text(resp.token).outerHTML());
-            }).fail(function() {
-                dialog.find('.bootbox-body').html('Failed to create token. Try again later.');
+            bootbox.confirm({
+                message: 'Are you sure you want to provision a new Vault key? This action may not be undone.",
+                buttons: {
+                    confirm: {
+                        label: 'Continue',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        provision_token();
+                    }
+                }
             });
         });
+
+        function provision_token() {
+            var dialog = bootbox.alert('Attempting to create new Vault token...');
+
+            $.ajax('https://provision.dev.bookmark.services/token', {
+                method: 'GET',
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(resp) {
+                    dialog.find('.bootbox-body').empty().append(
+                        $('<kbd>').text(resp.token)
+                    );
+                },
+                error: function() {
+                    dialog.find('.bootbox-body').html('Failed to create token. Try again later.');
+                }
+            });
+        }
         </script>
     </body>
 </html>
