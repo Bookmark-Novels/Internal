@@ -52,6 +52,15 @@
                                 <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-db">Access</a>
                             </div>
                         </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Sync Development Database</h4>
+                                <p class="card-text">Wipes your development database and updates it to use the latest official schema.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-db-sync">Access</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -154,6 +163,12 @@
             });
         });
 
+        $('#provision-db-sync').click(function(){
+            bootbox.prompt('Enter Database Name', function (result) {
+                sync_db(result);
+            });
+        });
+
         function provision_token() {
             var dialog = bootbox.alert('Attempting to create new Vault token...');
 
@@ -192,6 +207,25 @@
                 },
                 error: function() {
                     dialog.find('.bootbox-body').html('Failed to create database. Try again later.');
+                }
+            });
+        }
+
+        function sync_db(db) {
+            var dialog = bootbox.alert('Attempting to sync database...');
+
+            $.ajax('https://provision.dev.bookmark.services/sync-db?database=' + db, {
+                method: 'GET',
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(resp) {
+                    dialog.find('.bootbox-body').empty().append(
+                        $('<p>').html('Your database has been updated to the latest schema and is now in sync.')
+                    );
+                },
+                error: function() {
+                    dialog.find('.bootbox-body').html('Failed to sync database. Try again later.');
                 }
             });
         }
