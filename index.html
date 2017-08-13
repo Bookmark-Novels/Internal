@@ -11,7 +11,7 @@
         }
 
         .modal-header {
-            display: inherit;
+            display: block;
         }
         </style>
     </head>
@@ -169,6 +169,7 @@
 
         $('#provision-db-sync').click(function(){
             bootbox.prompt('Enter Database Name', function (result) {
+                if (!result) return;
                 sync_db(result);
             });
         });
