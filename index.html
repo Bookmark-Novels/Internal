@@ -37,10 +37,19 @@
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h4 class="card-title">Create Vault Token</h4>
-                                <p class="card-text">Create a personal Vault token for development purposes. This token is needed to access the shared MySQL server from services such as Gatekeeper and Provider</p>
+                                <p class="card-text">Create a personal Vault token for development purposes. This token is needed to access the shared MySQL server from services such as Gatekeeper and Provider.</p>
                             </div>
                             <div class="card-footer">
                                 <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-token">Access</a>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Create Development Database</h4>
+                                <p class="card-text">Create a new database on the shared development server.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-database">Access</a>
                             </div>
                         </div>
                     </div>
@@ -125,6 +134,26 @@
             });
         });
 
+        $('#provision-db').click(function(){
+            bootbox.confirm({
+                message: 'Are you sure you want to provision a new database? This action may not be undone.',
+                buttons: {
+                    confirm: {
+                        label: 'Continue',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        provision_db();
+                    }
+                }
+            });
+        });
+
         function provision_token() {
             var dialog = bootbox.alert('Attempting to create new Vault token...');
 
@@ -140,6 +169,29 @@
                 },
                 error: function() {
                     dialog.find('.bootbox-body').html('Failed to create token. Try again later.');
+                }
+            });
+        }
+
+        function provision_db() {
+            var dialog = bootbox.alert('Attempting to create new database...');
+
+            $.ajax('https://provision.dev.bookmark.services/database', {
+                method: 'GET',
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(resp) {
+                    dialog.find('.bootbox-body').empty().append(
+                        $('<kbd>').text('Database: ' + resp.database)
+                    ).append(
+                        $('<kbd>').text('User: ' + resp.user)
+                    ).append(
+                        $('<kbd>').text('Password: ' + resp.password)
+                    );
+                },
+                error: function() {
+                    dialog.find('.bootbox-body').html('Failed to create database. Try again later.');
                 }
             });
         }
