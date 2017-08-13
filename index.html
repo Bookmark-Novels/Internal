@@ -183,11 +183,11 @@
                 },
                 success: function(resp) {
                     dialog.find('.bootbox-body').empty().append(
-                        $('<kbd>').text('Database: ' + resp.database)
+                        $('<p>').html($('<kbd>').text('Database: ' + resp.database))
                     ).append(
-                        $('<kbd>').text('User: ' + resp.user)
+                        $('<p>').html($('<kbd>').text('User: ' + resp.user))
                     ).append(
-                        $('<kbd>').text('Password: ' + resp.password)
+                        $('<p>').html($('<kbd>').text('Password: ' + resp.password))
                     );
                 },
                 error: function() {
