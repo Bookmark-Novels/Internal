@@ -304,7 +304,7 @@
                 },
                 success: function(resp) {
                     dialog.find('.bootbox-body').empty().append(
-                        $('<p>').html($('<kbd>').text('Database: ' + resp.token))
+                        $('<p>').html($('<kbd>').text(resp.token))
                     )
                 },
                 error: function() {
