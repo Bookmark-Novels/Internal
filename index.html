@@ -40,11 +40,11 @@
                     <div class="tab-pane fade" id="v-pills-provision" role="tabpanel" aria-labelledby="v-pills-provision-tab">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h4 class="card-title">Create Vault Token</h4>
-                                <p class="card-text">Create a personal Vault token for development purposes. This token is needed to access the shared MySQL server from services such as Gatekeeper and Provider.</p>
+                                <h4 class="card-title">Create Consul Token</h4>
+                                <p class="card-text">Create a new Consul token for development purposes.</p>
                             </div>
                             <div class="card-footer">
-                                <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-token">Access</a>
+                                <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-consul">Access</a>
                             </div>
                         </div>
                         <div class="card mb-3">
@@ -54,6 +54,15 @@
                             </div>
                             <div class="card-footer">
                                 <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-db">Access</a>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Create Vault Token</h4>
+                                <p class="card-text">Create a personal Vault token for development purposes. This token is needed to access the shared MySQL server from services such as Gatekeeper and Provider.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="javascript:void(0);" class="card-link btn btn-primary" id="provision-token">Access</a>
                             </div>
                         </div>
                         <div class="card mb-3">
@@ -129,7 +138,7 @@
 
         $('#provision-token').click(function(){
             bootbox.confirm({
-                message: 'Are you sure you want to provision a new Vault key? This action may not be undone.',
+                message: 'Are you sure you want to provision a new Vault token? This action may not be undone.',
                 buttons: {
                     confirm: {
                         label: 'Continue',
@@ -171,6 +180,56 @@
             bootbox.prompt('Enter Database Name', function (result) {
                 if (!result) return;
                 sync_db(result);
+            });
+        });
+
+        $('#provision-consul').click(function(){
+            bootbox.confirm({
+                message: 'Are you sure you want to provision a new Consul token? This action may not be undone.',
+                buttons: {
+                    confirm: {
+                        label: 'Continue',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Cancel'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        bootbox.prompt({
+                            title: "Select Bookmark Service!",
+                            inputType: 'select',
+                            inputOptions: [
+                                {
+                                    text: 'Asgard',
+                                    value: 'asgard',
+                                },
+                                {
+                                    text: 'Gatekeeper',
+                                    value: 'gatekeeper',
+                                },
+                                {
+                                    text: 'Provider',
+                                    value: 'provider',
+                                },
+                                {
+                                    text: 'Watchdog',
+                                    value: 'watchdog',
+                                },
+                                {
+                                    text: 'Website',
+                                    value: 'website'
+                                }
+                            ],
+                            callback: function (result) {
+                                if (result) {
+                                    provision_consul(result);
+                                }
+                            }
+                        });
+                    }
+                }
             });
         });
 
@@ -231,6 +290,25 @@
                 },
                 error: function() {
                     dialog.find('.bootbox-body').html('Failed to sync database. Try again later.');
+                }
+            });
+        }
+
+        function provision_consul(service) {
+            var dialog = bootbox.alert('Attempting to create new Consul token...');
+
+            $.ajax('https://provision.dev.bookmark.services/consul-token/' + service, {
+                method: 'GET',
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(resp) {
+                    dialog.find('.bootbox-body').empty().append(
+                        $('<p>').html($('<kbd>').text('Database: ' + resp.token))
+                    )
+                },
+                error: function() {
+                    dialog.find('.bootbox-body').html('Failed to create Consul token. Try again later.');
                 }
             });
         }
